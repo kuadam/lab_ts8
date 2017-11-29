@@ -19,9 +19,10 @@ namespace serwer
         IPEndPoint reciveEndPoint = new IPEndPoint(IPAddress.Any, 0);
         private int l1, l2;
         Komunikat komunikat = new Komunikat();
+        Komunikat komunikat2 = new Komunikat();
+        private int zgadywana = 0;
 
-
-        public void firsRecive(ref UdpClient udpServer)
+        public void Start(ref UdpClient udpServer)
         {
             //1
             Byte[] receiveBytes = udpServer.Receive(ref Client1);
@@ -39,7 +40,7 @@ namespace serwer
             sendBytes = Encoding.ASCII.GetBytes(komunikat.GetMsg());
             udpServer.Send(sendBytes, sendBytes.Length, Client1);
             //Odebranie ACK
-            receiveBytes = udpServer.Receive(ref Client1);
+            receiveBytes = udpServer.Receive(ref reciveEndPoint);
             komunikat.Ustaw(receiveBytes);
 
             //2
@@ -58,7 +59,7 @@ namespace serwer
             sendBytes = Encoding.ASCII.GetBytes(komunikat.GetMsg());
             udpServer.Send(sendBytes, sendBytes.Length, Client2);
             //Odebranie ACK
-            receiveBytes = udpServer.Receive(ref Client2);
+            receiveBytes = udpServer.Receive(ref reciveEndPoint);
             komunikat.Ustaw(receiveBytes);
 
             //odebranie przdzialu
@@ -86,38 +87,114 @@ namespace serwer
             }
 
             int liczba_prob = (l1 + l2) / 2;
-            Console.WriteLine("Liczba prob "+liczba_prob);
-            //Wyslanie przedzialu
+            Console.WriteLine("Liczba prob " + liczba_prob);
+
+            //Wylosowanie liczby
+            int min, max;
+            min = l1 - l2;
+            max = l1 + l2;
+            Random random = new Random();
+            zgadywana = random.Next(min, max);
+            Console.WriteLine("Zgadywna liczba to: " + zgadywana);
+
+            //Wyslanie liczby prob
             komunikat.Clear();
             komunikat.SetOp("PrzeslanieProb");
             komunikat.SetLiczba(liczba_prob.ToString());
             sendBytes = Encoding.ASCII.GetBytes(komunikat.GetMsg());
             udpServer.Send(sendBytes, sendBytes.Length, Client1);
             //Odebranie ACK
-            receiveBytes = udpServer.Receive(ref Client1);
+            receiveBytes = udpServer.Receive(ref reciveEndPoint);
             komunikat.Ustaw(receiveBytes);
 
-            //Wyslanie przedzialu
+            //Wyslanie liczby prob
             komunikat.Clear();
             komunikat.SetOp("PrzeslanieProb");
             komunikat.SetLiczba(liczba_prob.ToString());
             sendBytes = Encoding.ASCII.GetBytes(komunikat.GetMsg());
             udpServer.Send(sendBytes, sendBytes.Length, Client2);
             //Odebranie ACK
-            receiveBytes = udpServer.Receive(ref Client2);
+            receiveBytes = udpServer.Receive(ref reciveEndPoint);
             komunikat.Ustaw(receiveBytes);
+
+
         }
         public void Recive(ref UdpClient udpServer)
         {
             komunikat.Ustaw(udpServer.Receive(ref reciveEndPoint));
             if (reciveEndPoint.Address.ToString() == Client1.Address.ToString() && reciveEndPoint.Port == Client1.Port && komunikat.GetId() == Id1)
             {
+                //wyslanie ACK
+                komunikat2.Clear();
+                komunikat2.SetOp("ACK");
+                Byte[] sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
+                udpServer.Send(sendBytes, sendBytes.Length, Client1);
 
+                if (Convert.ToInt32(komunikat.GetLiczba()) == zgadywana)
+                {
+                    komunikat2.Clear();
+                    komunikat2.SetOp("OdpSerwera");
+                    komunikat2.SetOdp("Tak");
+                    sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
+                    udpServer.Send(sendBytes, sendBytes.Length, Client1);
+                }
+                else if (Convert.ToInt32(komunikat.GetLiczba()) > zgadywana)
+                {
+                    komunikat2.Clear();
+                    komunikat2.SetOp("OdpSerwera");
+                    komunikat2.SetOdp("Mniejsza");
+                    sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
+                    udpServer.Send(sendBytes, sendBytes.Length, Client1);
+                }
+                else if (Convert.ToInt32(komunikat.GetLiczba()) < zgadywana)
+                {
+                    komunikat2.Clear();
+                    komunikat2.SetOp("OdpSerwera");
+                    komunikat2.SetOdp("Wieksza");
+                    sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
+                    udpServer.Send(sendBytes, sendBytes.Length, Client1);
+                }
+                //Odebranie ACK
+                Byte[] receiveBytes = udpServer.Receive(ref reciveEndPoint);
+                komunikat.Ustaw(receiveBytes);
             }
             else if (reciveEndPoint.Address.ToString() == Client2.Address.ToString() && reciveEndPoint.Port == Client2.Port && komunikat.GetId() == Id2)
             {
+                //wyslanie ACK
+                komunikat2.Clear();
+                komunikat2.SetOp("ACK");
+                Byte[] sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
+                udpServer.Send(sendBytes, sendBytes.Length, Client2);
 
+                if (Convert.ToInt32(komunikat.GetLiczba()) == zgadywana)
+                {
+                    komunikat2.Clear();
+                    komunikat2.SetOp("OdpSerwera");
+                    komunikat2.SetOdp("Tak");
+                    sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
+                    udpServer.Send(sendBytes, sendBytes.Length, Client2);
+                }
+                else if (Convert.ToInt32(komunikat.GetLiczba()) > zgadywana)
+                {
+                    komunikat2.Clear();
+                    komunikat2.SetOp("OdpSerwera");
+                    komunikat2.SetOdp("Mniejsza");
+                    sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
+                    udpServer.Send(sendBytes, sendBytes.Length, Client2);
+                }
+                else if (Convert.ToInt32(komunikat.GetLiczba()) < zgadywana)
+                {
+                    komunikat2.Clear();
+                    komunikat2.SetOp("OdpSerwera");
+                    komunikat2.SetOdp("Wieksza");
+                    sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
+                    udpServer.Send(sendBytes, sendBytes.Length, Client2);
+                }
+                //Odebranie ACK
+                Byte[] receiveBytes = udpServer.Receive(ref reciveEndPoint);
+                komunikat.Ustaw(receiveBytes);
             }
+
         }
     }
 }

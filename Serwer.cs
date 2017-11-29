@@ -12,12 +12,16 @@ using System.Threading.Tasks;
  * GetID - prosba klienta o nadanie id
  * ACK - potwierdzenie
  * ID - nadanie id
- * LiczbaDoPrzedzialu
- * PrzeslanieProb
+ * LiczbaDoPrzedzialu - klient przesyla liczbe do przedzialu
+ * PrzeslanieProb - serwer przesyla liczbe prob
+ * Zgadywana - klient przesyla zgadywana liczbe
+ * OdpSerwera - odpowiedz serwera (mniejsza wieksza itp)
   
  
  * Odpowiedz  
- * 
+ * Tak - klient zgadl
+ * Mniejsza - liczba zgadywana jest mniejsza od podanej
+ * Wieksza - liczba zgadywana jest wieksza od podanej
  *      
      */
 
@@ -36,8 +40,11 @@ namespace serwer
                 UDPserwer serwer = new UDPserwer();
                 Komunikat komunikat = new Komunikat();
 
-                serwer.firsRecive(ref udpServer);
-
+                serwer.Start(ref udpServer);
+                while (true)
+                {
+                    serwer.Recive(ref udpServer);
+                }
             }
             catch (Exception e)
             {
