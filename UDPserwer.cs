@@ -14,8 +14,8 @@ namespace serwer
     {
         IPEndPoint Client1 = new IPEndPoint(IPAddress.Any, 0);
         IPEndPoint Client2 = new IPEndPoint(IPAddress.Any, 0);
-        String Id1 = "pierwszy";
-        String Id2 = "drugi";
+        String Id1 = "Pierwszy";
+        String Id2 = "Drugi";
         IPEndPoint reciveEndPoint = new IPEndPoint(IPAddress.Any, 0);
         private int l1, l2;
         Komunikat komunikat = new Komunikat();

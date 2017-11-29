@@ -15,9 +15,7 @@ namespace klient
             try
             {
                 Console.WriteLine("Wprowadz IP serwera: ");
-                //String ip = "192.168.0.16";
-                String ip = "127.0.0.1";
-                //ip = Console.ReadLine();
+                String ip = Console.ReadLine();
                 int port = 55123;
                 String id;
                 IPEndPoint ServerIP = new IPEndPoint(IPAddress.Parse(ip), port);
@@ -39,7 +37,7 @@ namespace klient
                 komunikat.Ustaw(udpClient.Receive(ref ServerIP));
                 id = komunikat.GetId();
 
-                Console.WriteLine(komunikat.GetId());
+                Console.WriteLine("Nadano ID: "+komunikat.GetId());
                 //wyslanie ack
                 komunikat.Clear();
                 komunikat.SetOp("ACK");

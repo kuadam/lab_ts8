@@ -37,6 +37,13 @@ namespace serwer
                 int port = 55123;
                 UdpClient udpServer = new UdpClient(55123);
 
+                string hostName = Dns.GetHostName(); // pobieranie nazwy 
+                Console.WriteLine("Nazwa serwera: " + hostName);
+
+                // uzyskanie adresu IP 
+                string ip = Dns.GetHostByName(hostName).AddressList[0].ToString();
+                Console.WriteLine("Adres IP:" + ip);
+
                 UDPserwer serwer = new UDPserwer();
                 Komunikat komunikat = new Komunikat();
 
