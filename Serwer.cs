@@ -19,7 +19,8 @@ using System.Threading.Tasks;
   
  
  * Odpowiedz  
- * Tak - klient zgadl
+ * Wygrywasz - klient wygral
+ * Przegrywasz - klient przegral
  * Mniejsza - liczba zgadywana jest mniejsza od podanej
  * Wieksza - liczba zgadywana jest wieksza od podanej
  *      

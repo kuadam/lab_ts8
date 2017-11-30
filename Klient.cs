@@ -125,9 +125,14 @@ namespace klient
                     sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
                     udpClient.Send(sendBytes, sendBytes.Length);
 
-                    if (komunikat.GetOdp() == "Tak")
+                    if (komunikat.GetOdp() == "Wygrywasz")
                     {
-                        Console.WriteLine("Zgadles");
+                        Console.WriteLine("Wygrales");
+                        break;
+                    }
+                    else if (komunikat.GetOdp() == "Przegrywasz")
+                    {
+                        Console.WriteLine("Przegrales");
                         break;
                     }
                     else if (komunikat.GetOdp() == "Mniejsza")

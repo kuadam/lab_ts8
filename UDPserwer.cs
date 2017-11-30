@@ -21,6 +21,7 @@ namespace serwer
         Komunikat komunikat = new Komunikat();
         Komunikat komunikat2 = new Komunikat();
         private int zgadywana = 0;
+        private bool wygrana = false;
 
         public void Start(ref UdpClient udpServer)
         {
@@ -129,12 +130,20 @@ namespace serwer
                 komunikat2.SetOp("ACK");
                 Byte[] sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
                 udpServer.Send(sendBytes, sendBytes.Length, Client1);
-
-                if (Convert.ToInt32(komunikat.GetLiczba()) == zgadywana)
+                if (wygrana)
                 {
                     komunikat2.Clear();
                     komunikat2.SetOp("OdpSerwera");
-                    komunikat2.SetOdp("Tak");
+                    komunikat2.SetOdp("Przegrywasz");
+                    sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
+                    udpServer.Send(sendBytes, sendBytes.Length, Client1);
+                }
+                else if (Convert.ToInt32(komunikat.GetLiczba()) == zgadywana)
+                {
+                    wygrana = true;
+                    komunikat2.Clear();
+                    komunikat2.SetOp("OdpSerwera");
+                    komunikat2.SetOdp("Wygrywasz");
                     sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
                     udpServer.Send(sendBytes, sendBytes.Length, Client1);
                 }
@@ -166,11 +175,20 @@ namespace serwer
                 Byte[] sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
                 udpServer.Send(sendBytes, sendBytes.Length, Client2);
 
-                if (Convert.ToInt32(komunikat.GetLiczba()) == zgadywana)
+                if (wygrana)
                 {
                     komunikat2.Clear();
                     komunikat2.SetOp("OdpSerwera");
-                    komunikat2.SetOdp("Tak");
+                    komunikat2.SetOdp("Przegrywasz");
+                    sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
+                    udpServer.Send(sendBytes, sendBytes.Length, Client2);
+                }
+                else if (Convert.ToInt32(komunikat.GetLiczba()) == zgadywana)
+                {
+                    wygrana = true;
+                    komunikat2.Clear();
+                    komunikat2.SetOp("OdpSerwera");
+                    komunikat2.SetOdp("Wygrywasz");
                     sendBytes = Encoding.ASCII.GetBytes(komunikat2.GetMsg());
                     udpServer.Send(sendBytes, sendBytes.Length, Client2);
                 }
